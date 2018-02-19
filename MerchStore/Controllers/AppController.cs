@@ -12,12 +12,12 @@ namespace MerchStore.Controllers
     public class AppController : Controller
     {
         private readonly IMailService mailService;
-        private readonly MerchContext context;
+        private readonly IMerchRepository repository;
 
-        public AppController(IMailService mailService, MerchContext context)
+        public AppController(IMailService mailService, IMerchRepository repository)
         {
             this.mailService = mailService;
-            this.context = context;
+            this.repository = repository;            
         }
 
         public IActionResult Index()
@@ -53,9 +53,7 @@ namespace MerchStore.Controllers
 
         public IActionResult Shop()
         {
-            var results = this.context.Products
-                .OrderBy(p => p.Category)
-                .ToList();
+            var results = this.repository.GetAllProducts();                
 
             return View(results);
         }

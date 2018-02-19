@@ -1,4 +1,5 @@
 ﻿using MerchStore.Data.Entities;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,25 +8,39 @@ using System.Threading.Tasks;
 
 namespace MerchStore.Data
 {
-    public class MerchRepository
+    public class MerchRepository : IMerchRepository
     {
         private readonly MerchContext ctx;
+        private readonly ILogger<MerchRepository> logger;
 
-        public MerchRepository(MerchContext ctx)
+        public MerchRepository(MerchContext ctx, ILogger<MerchRepository> logger)
         {
             this.ctx = ctx;
+            this.logger = logger;
         }
 
         public IEnumerable<Product> GetAllProducts()
         {
-
-            return this.ctx.Products.OrderBy(p => p.Title).ToList();
+            try
+            {
+                this.logger.LogInformation("Get All Products");
+                return this.ctx.Products.OrderBy(p => p.Title).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError($"Failed to get all products: {ex}");
+                return null;
+            }
         }
 
         public IEnumerable<Product> GetProductByCategory(string category)
         {
-
             return this.ctx.Products.OrderBy(p => p.Category == category).ToList();
+        }
+
+        public bool SaveAll()
+        {
+            return this.ctx.SaveChanges() > 0;
         }
     }
 }

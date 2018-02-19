@@ -30,7 +30,11 @@ namespace MerchStore
                 cfg.UseSqlServer(this.config.GetConnectionString("MerchConnectionString"));
             });
             services.AddTransient<IMailService, NullMailService>();
+
             services.AddTransient<MerchSeeder>();
+
+            services.AddScoped<IMerchRepository, MerchRepository>();
+
             services.AddMvc();
         }
 
