@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "MerchConnectionString": "server=(localdb)\\ProjectsV13;Database=MerchStoreDb;Integrated Security=true;MultipleActiveResultSets=true"
+  }
+}

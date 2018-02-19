@@ -1,4 +1,5 @@
-﻿using MerchStore.Services;
+﻿using MerchStore.Data;
+using MerchStore.Services;
 using MerchStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,10 +12,12 @@ namespace MerchStore.Controllers
     public class AppController : Controller
     {
         private readonly IMailService mailService;
+        private readonly MerchContext context;
 
-        public AppController(IMailService mailService)
+        public AppController(IMailService mailService, MerchContext context)
         {
             this.mailService = mailService;
+            this.context = context;
         }
 
         public IActionResult Index()
@@ -46,6 +49,15 @@ namespace MerchStore.Controllers
             ViewBag.Title = "About Us";
 
             return View();
+        }
+
+        public IActionResult Shop()
+        {
+            var results = this.context.Products
+                .OrderBy(p => p.Category)
+                .ToList();
+
+            return View(results);
         }
     }
 }
