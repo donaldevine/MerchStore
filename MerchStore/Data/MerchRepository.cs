@@ -20,6 +20,11 @@ namespace MerchStore.Data
             this.logger = logger;
         }
 
+        public void AddEntity(object model)
+        {
+            this.ctx.Add(model);
+        }
+
         public IEnumerable<Order> GetAllOrders()
         {
             return this.ctx.Orders

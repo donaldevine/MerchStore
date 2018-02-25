@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MerchStore.Data;
 using MerchStore.Services;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +30,10 @@ namespace MerchStore
             services.AddDbContext<MerchContext>(cfg => {
                 cfg.UseSqlServer(this.config.GetConnectionString("MerchConnectionString"));
             });
+
+
+            services.AddAutoMapper();
+
             services.AddTransient<IMailService, NullMailService>();
 
             services.AddTransient<MerchSeeder>();

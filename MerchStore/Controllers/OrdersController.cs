@@ -1,4 +1,7 @@
-﻿using MerchStore.Data;
+﻿using AutoMapper;
+using MerchStore.Data;
+using MerchStore.Data.Entities;
+using MerchStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,19 +18,50 @@ namespace MerchStore.Controllers
     {
         private readonly IMerchRepository repository;
         private readonly ILogger<OrdersController> logger;
+        private readonly IMapper mapper;
 
-        public OrdersController(IMerchRepository repository, ILogger<OrdersController> logger)
+        public OrdersController(IMerchRepository repository, 
+            ILogger<OrdersController> logger, 
+            IMapper mapper)
         {
             this.repository = repository;
             this.logger = logger;
+            this.mapper = mapper;
         }   
+
+        [HttpPost()]
+        public IActionResult Post([FromBody]OrderViewModel model)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    var newOrder = this.mapper.Map<OrderViewModel, Order>(model);
+
+                    if (this.repository.SaveAll())
+                    {                                                
+                        return Created($"/api/orders/{newOrder.Id}", this.mapper.Map<Order, OrderViewModel>(newOrder));
+                    }                    
+                }
+                
+                return BadRequest(ModelState);
+                
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError($"Failed to save a new order: {ex}");
+                throw;
+            }
+            
+        }
 
         [HttpGet()]
         public IActionResult Get()
         {
             try
             {
-                return Ok(this.repository.GetAllOrders());
+                return Ok(this.mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(this.repository.GetAllOrders()));
             }
             catch (Exception ex)
             {
@@ -45,7 +79,7 @@ namespace MerchStore.Controllers
 
                 if (order != null)
                 {
-                    return Ok(order);
+                    return Ok(this.mapper.Map<Order, OrderViewModel>(order));
                 }
                 else
                 {
