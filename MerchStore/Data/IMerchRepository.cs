@@ -9,7 +9,7 @@ namespace MerchStore.Data
         IEnumerable<Product> GetProductByCategory(string category);
 
         bool SaveAll();
-        IEnumerable<Order> GetAllOrders();
+        IEnumerable<Order> GetAllOrders(bool includeItems);
         Order GetOrderById(int id);
         void AddEntity(object model);
     }

@@ -57,11 +57,12 @@ namespace MerchStore.Controllers
         }
 
         [HttpGet()]
-        public IActionResult Get()
+        public IActionResult Get(bool includeItems = true)
         {
             try
             {
-                return Ok(this.mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(this.repository.GetAllOrders()));
+                var results = this.repository.GetAllOrders(includeItems);
+                return Ok(this.mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(results));
             }
             catch (Exception ex)
             {

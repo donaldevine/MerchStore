@@ -25,13 +25,24 @@ namespace MerchStore.Data
             this.ctx.Add(model);
         }
 
-        public IEnumerable<Order> GetAllOrders()
+        public IEnumerable<Order> GetAllOrders(bool includeItems)
         {
-            return this.ctx.Orders
+
+            if (includeItems)
+            {
+                return this.ctx.Orders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .ToList();
+            }
+            else
+            {
+                return this.ctx.Orders.ToList();
+            }
+            
         }
+
+
 
         public IEnumerable<Product> GetAllProducts()
         {
