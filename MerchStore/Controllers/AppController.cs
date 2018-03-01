@@ -1,6 +1,7 @@
 ﻿using MerchStore.Data;
 using MerchStore.Services;
 using MerchStore.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace MerchStore.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Shop()
         {
             var results = this.repository.GetAllProducts();                

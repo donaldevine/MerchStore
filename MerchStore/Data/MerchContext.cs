@@ -1,4 +1,5 @@
 ﻿using MerchStore.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MerchStore.Data
 {
-    public class MerchContext : DbContext
+    public class MerchContext : IdentityDbContext<StoreUser>
     {
 
         public MerchContext(DbContextOptions<MerchContext> options): base(options)
