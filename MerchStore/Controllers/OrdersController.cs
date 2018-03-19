@@ -2,6 +2,8 @@
 using MerchStore.Data;
 using MerchStore.Data.Entities;
 using MerchStore.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,6 +16,7 @@ namespace MerchStore.Controllers
 {
 
     [Route("api/[Controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdersController : Controller
     {
         private readonly IMerchRepository repository;
@@ -61,7 +64,12 @@ namespace MerchStore.Controllers
         {
             try
             {
-                var results = this.repository.GetAllOrders(includeItems);
+
+                var username = User.Identity.Name;
+
+                var results = this.repository.GetAllOrdersByUser(username, includeItems);
+
+                
                 return Ok(this.mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(results));
             }
             catch (Exception ex)

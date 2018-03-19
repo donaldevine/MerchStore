@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MerchStore
 {
@@ -33,6 +35,18 @@ namespace MerchStore
                 cfg.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<MerchContext>();
+
+            services.AddAuthentication()
+                .AddCookie()
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                    {
+                        ValidIssuer = this.config["Tokens:Issuer"],
+                        ValidAudience = this.config["Tokens:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config["Tokens:Key"]))
+                    };
+                });
 
             services.AddDbContext<MerchContext>(cfg => {
                 cfg.UseSqlServer(this.config.GetConnectionString("MerchConnectionString"));
